@@ -1,16 +1,13 @@
 const cells = document.querySelectorAll('.cell');
 const statusText = document.getElementById('status');
 const restartBtn = document.getElementById('restart');
+const themeBtn = document.getElementById('themeBtn');
 
 let gameBoard = ['', '', '', '', '', '', '', '', ''];
 let currentPlayer = 'X';
 let gameActive = true;
-const vsAI = true;
+let currentMode = 'ai'; // Default mode is Player vs AI
 
-// Load audio
-const moveSound = new Audio('move.mp3');
-const winSound = new Audio('win.mp3');
-const drawSound = new Audio('draw.mp3');
 
 const winPatterns = [
   [0,1,2],[3,4,5],[6,7,8],
@@ -18,58 +15,75 @@ const winPatterns = [
   [0,4,8],[2,4,6]
 ];
 
+// Click Handler
+cells.forEach(cell => cell.addEventListener('click', handleClick));
+restartBtn.addEventListener('click', restartGame);
+
 function handleClick(e) {
   const index = e.target.dataset.index;
+  if (gameBoard[index] !== '' || !gameActive) return;
 
-  if (gameBoard[index] !== '' || !gameActive || currentPlayer !== 'X') return;
+  makeMove(index, currentPlayer);
 
-  makeMove(index, 'X');
-
-  if (gameActive && vsAI) {
-    setTimeout(() => {
-      const aiIndex = getBestMove();
-      makeMove(aiIndex, 'O');
-    }, 500);
-  }
-}
-
-function makeMove(index, player) {
-  gameBoard[index] = player;
-  cells[index].textContent = player;
-  cells[index].classList.add('played');
-  moveSound.play();
-
-  if (checkWin(player)) {
-    statusText.textContent = `Player ${player} wins!`;
-    gameActive = false;
-    winSound.play();
-  } else if (gameBoard.every(cell => cell !== '')) {
-    statusText.textContent = "It's a draw!";
-    gameActive = false;
-    drawSound.play();
-  } else {
-    currentPlayer = player === 'X' ? 'O' : 'X';
-    if (!vsAI || currentPlayer === 'X') {
-      statusText.textContent = `Player ${currentPlayer}'s turn`;
+  if (gameActive) {
+    if (currentMode === 'ai' && currentPlayer === 'X') {
+      setTimeout(() => {
+        const aiIndex = getBestMove();
+        makeMove(aiIndex, 'O');
+      }, 400);
     }
   }
 }
 
+
+
+// function handleClick(e) {
+//   const index = e.target.dataset.index;
+//   if (gameBoard[index] !== '' || !gameActive || currentPlayer !== 'X') return;
+
+//   makeMove(index, 'X');
+
+//   if (gameActive && vsAI) {
+//     setTimeout(() => {
+//       const aiIndex = getBestMove();
+//       makeMove(aiIndex, 'O');
+//     }, 500);
+//   }
+// }
+
+// Make Move
+function makeMove(index, player) {
+  gameBoard[index] = player;
+  cells[index].textContent = player;
+  cells[index].classList.add('played');
+  cells[index].style.color = document.body.classList.contains('dark') ? 'white' : 'black';
+
+  if (checkWin(player)) {
+    statusText.textContent = `Player ${player} wins!`;
+    gameActive = false;
+  } else if (gameBoard.every(cell => cell !== '')) {
+    statusText.textContent = "It's a draw!";
+    gameActive = false;
+  } else {
+    currentPlayer = player === 'X' ? 'O' : 'X';
+    statusText.textContent = `Player ${currentPlayer}'s turn`;
+  }
+}
+
+// Check Winner
 function checkWin(player) {
   return winPatterns.some(pattern => {
     const [a, b, c] = pattern;
-    return (
-      gameBoard[a] === player &&
-      gameBoard[b] === player &&
-      gameBoard[c] === player
-    );
+    return gameBoard[a] === player &&
+           gameBoard[a] === gameBoard[b] &&
+           gameBoard[a] === gameBoard[c];
   });
 }
 
+// Smart AI (Minimax)
 function getBestMove() {
   let bestScore = -Infinity;
   let move;
-
   gameBoard.forEach((val, i) => {
     if (val === '') {
       gameBoard[i] = 'O';
@@ -81,7 +95,6 @@ function getBestMove() {
       }
     }
   });
-
   return move;
 }
 
@@ -115,34 +128,25 @@ function minimax(board, depth, isMaximizing) {
   }
 }
 
+// Restart Game
 function restartGame() {
   gameBoard = ['', '', '', '', '', '', '', '', ''];
   gameActive = true;
   currentPlayer = 'X';
-  statusText.textContent = `Player X's turn`;
+  statusText.textContent = "Player X's turn";
   cells.forEach(cell => {
     cell.textContent = '';
     cell.classList.remove('played');
+    cell.style.color = document.body.classList.contains('dark') ? 'white' : 'black';
   });
 }
 
-cells.forEach(cell => cell.addEventListener('click', handleClick));
-restartBtn.addEventListener('click', restartGame);
-
-
+// Theme Toggle
 function toggleTheme() {
-  const body = document.body;
-  const button = document.querySelector('.toggle-theme');
-  const cells = document.querySelectorAll('.cell');
+  document.body.classList.toggle('dark');
+  themeBtn.textContent = document.body.classList.contains('dark') ? 'Light Mode' : 'Dark Mode';
 
-  body.classList.toggle('dark');
-
-  // Update button text
-  if (body.classList.contains('dark')) {
-    button.textContent = 'Light Mode';
-    cells.forEach(cell => cell.style.color = 'white');
-  } else {
-    button.textContent = 'Dark Mode';
-    cells.forEach(cell => cell.style.color = 'black');
-  }
+  cells.forEach(cell => {
+    cell.style.color = document.body.classList.contains('dark') ? 'white' : 'black';
+  });
 }
