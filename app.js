@@ -21,12 +21,20 @@ restartBtn.addEventListener('click', restartGame);
 
 function handleClick(e) {
   const index = e.target.dataset.index;
+
   if (gameBoard[index] !== '' || !gameActive) return;
 
-  makeMove(index, currentPlayer);
+  // PvP Mode
+  if (currentMode === 'pvp') {
+    makeMove(index, currentPlayer);
+  }
 
-  if (gameActive) {
-    if (currentMode === 'ai' && currentPlayer === 'X') {
+  // PvAI Mode
+  else if (currentMode === 'ai' && currentPlayer === 'X') {
+    makeMove(index, 'X');
+
+    // Let AI play if game is still active
+    if (gameActive) {
       setTimeout(() => {
         const aiIndex = getBestMove();
         makeMove(aiIndex, 'O');
@@ -34,9 +42,6 @@ function handleClick(e) {
     }
   }
 }
-
-
-
 // function handleClick(e) {
 //   const index = e.target.dataset.index;
 //   if (gameBoard[index] !== '' || !gameActive || currentPlayer !== 'X') return;

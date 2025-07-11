@@ -112,3 +112,22 @@ button:hover {
     font-size: 1.5rem;
   }
 }
+
+#modeSelect {
+  margin: 10px 0 20px;
+  padding: 10px 16px;
+  font-size: 16px;
+  border: 2px solid var(--primary-color);
+  border-radius: 5px;
+  background-color: var(--cell-bg);
+  color: var(--text-color);
+  outline: none;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s, border 0.3s;
+}
+
+body.dark #modeSelect {
+  background-color: var(--cell-bg);
+  color: var(--text-color);
+  border-color: var(--primary-color);
+}
