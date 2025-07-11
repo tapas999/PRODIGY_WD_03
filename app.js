@@ -150,3 +150,9 @@ function toggleTheme() {
     cell.style.color = document.body.classList.contains('dark') ? 'white' : 'black';
   });
 }
+
+function changeMode() {
+  const modeDropdown = document.getElementById('modeSelect');
+  currentMode = modeDropdown.value;
+  restartGame(); // Reset board on mode switch
+}
