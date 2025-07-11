@@ -59,3 +59,56 @@ h1 {
   transform: scale(1.1);
   background: #fff2f2;
 }
+:root {
+  --bg-color: #fefefe;
+  --text-color: #333;
+  --primary-color: #b30000;
+  --cell-bg: white;
+  --hover-bg: #ffe6e6;
+}
+
+body.dark {
+  --bg-color: #121212;
+  --text-color: #f0f0f0;
+  --primary-color: #ff4d4d;
+  --cell-bg: #1e1e1e;
+  --hover-bg: #333;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background 0.3s, color 0.3s;
+}
+
+h1 {
+  color: var(--primary-color);
+}
+
+nav, header {
+  background-color: var(--primary-color);
+}
+
+.cell {
+  background: var(--cell-bg);
+  border: 2px solid var(--primary-color);
+}
+.cell {
+  background: var(--cell-bg);
+  border: 2px solid var(--primary-color);
+  color: var(--text-color); /* <-- Add this */
+}
+
+.cell:hover {
+  background-color: var(--hover-bg);
+}
+
+.toggle-theme {
+  margin-top: 20px;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}

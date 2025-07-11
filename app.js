@@ -128,3 +128,21 @@ function restartGame() {
 
 cells.forEach(cell => cell.addEventListener('click', handleClick));
 restartBtn.addEventListener('click', restartGame);
+
+
+function toggleTheme() {
+  const body = document.body;
+  const button = document.querySelector('.toggle-theme');
+  const cells = document.querySelectorAll('.cell');
+
+  body.classList.toggle('dark');
+
+  // Update button text
+  if (body.classList.contains('dark')) {
+    button.textContent = 'Light Mode';
+    cells.forEach(cell => cell.style.color = 'white');
+  } else {
+    button.textContent = 'Dark Mode';
+    cells.forEach(cell => cell.style.color = 'black');
+  }
+}
